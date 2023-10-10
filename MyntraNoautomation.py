@@ -281,25 +281,7 @@ except: all_data = ''
 print("\n\n\n\nLength of Error IDs",len(Error_Ids),"\n\nmandatory data",len(all_output_lis),"\n\nNon Mandatory data",len(Data_without_filtered))
 No_json_excep = pd.DataFrame({'Exception_ProductID':list(set(No_json_loads))}).to_excel(r'MyntraFailedJson_ErrorIds.xlsx')
 
-def gcp_push(data, f_type):
-    try:
-        current_date = datetime.datetime.now().date()
-        current_month = current_date.strftime("%m")
-        current_date = datetime.datetime.now().date()
-        current_day = current_date.strftime("%d") 
-        client = storage.Client.from_service_account_json(json_credentials_path=r'credentials-python-storage.json')
-        filename=f"Myntra_{f_type}.csv"
-        # filename = 'FlipkartPDP2_Test.csv'
-        csv_buffer = data.to_csv(index=False)
-        bucket = client.get_bucket('tmrw_scraping_data')
-        blob=bucket.blob(f'pdp/myntra/2023/{current_month}/{current_day}/{filename}')
-        blob.upload_from_string(csv_buffer, content_type='text/csv')
-        print('batch Data pushed to GCP')
-    except:
-        print("Failed to push the data to GCP")
 
-gcp_push(Mandatory_data,f_type="Mandatory")
-gcp_push(all_data, f_type = "Non_mandatory")
 
 
 
